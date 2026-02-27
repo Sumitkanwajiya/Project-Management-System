@@ -2,9 +2,9 @@ import axios from "axios";
 
 // Helper to determine the correct API URL
 const getBaseUrl = () => {
-  let url = import.meta.env.VITE_API_URL || (import.meta.env.MODE === "development" ? "http://localhost:5000" : "https://final-year-project-management-syste-phi.vercel.app");
+  let url = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-  // Remove trailing list if present
+  // Remove trailing slash if present
   if (url.endsWith('/')) {
     url = url.slice(0, -1);
   }
