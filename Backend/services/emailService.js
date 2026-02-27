@@ -6,18 +6,20 @@ const sendEmail = async (options) => {
   }
 
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: process.env.SMTP_PORT == 465, // true for 465, false for others
+    host: process.env.SMTP_HOST || "smtp.gmail.com",
+    port: process.env.SMTP_PORT || 465,
+    secure: process.env.SMTP_PORT == 465 || process.env.SMTP_PORT == undefined, // default to true for 465
     auth: {
       user: process.env.SMTP_EMAIL,
       pass: process.env.SMTP_PASSWORD,
     },
+    tls: {
+      // do not fail on invalid certs
+      rejectUnauthorized: false
+    },
     // Production stability settings
-    connectionTimeout: 10000, // 10 seconds 
+    connectionTimeout: 10000,
     socketTimeout: 10000,
-    logger: true,
-    debug: true
   });
 
   const mailOptions = {
