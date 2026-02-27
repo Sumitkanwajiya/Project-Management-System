@@ -90,7 +90,7 @@ export const uploadFile = asyncHandler(async (req, res, next) => {
 });
 
 export const getAvailableSupervisors = asyncHandler(async (req, res) => {
-    const supervisors = await User.find({ role: "Teacher" })
+    const supervisors = await User.find({ role: { $regex: /^teacher$/i } })
         .select("name email department");
 
     res.status(200).json({
@@ -127,7 +127,7 @@ export const requestSupervisorChange = asyncHandler(async (req, res, next) => {
     }
 
     const supervisor = await User.findById(teacherId);
-    if (!supervisor || supervisor.role !== "Teacher") {
+    if (!supervisor || supervisor.role.toLowerCase() !== "teacher") {
         return next(new ErrorHandler("Teacher not found", 404));
     }
 

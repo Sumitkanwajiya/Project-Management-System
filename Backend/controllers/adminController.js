@@ -66,7 +66,6 @@ export const updateStudent = asyncHandler(async (req, res, next) => {
         user
     });
 });
-
 export const deleteStudent = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     const user = await User.findById(id);
@@ -79,6 +78,20 @@ export const deleteStudent = asyncHandler(async (req, res, next) => {
         return next(new ErrorHandler("User is not a Student", 400));
     }
 
+    // 1. Delete associated Project
+    await Project.deleteMany({ student: id });
+
+    // 2. Delete associated SupervisorRequests
+    await SupervisorRequest.deleteMany({ student: id });
+
+    // 3. Remove student from Teacher's assignedStudents list if they have a supervisor
+    if (user.supervisor) {
+        await User.findByIdAndUpdate(user.supervisor, {
+            $pull: { assignedStudents: id }
+        });
+    }
+
+    // 4. Finally delete the student user
     await user.deleteOne();
 
     res.status(200).json({
@@ -184,6 +197,22 @@ export const deleteTeacher = asyncHandler(async (req, res, next) => {
         return next(new ErrorHandler("User is not a Teacher", 400));
     }
 
+    // 1. Delete all SupervisorRequests directed at this teacher
+    await SupervisorRequest.deleteMany({ supervisor: id });
+
+    // 2. Unassign this teacher from all Students
+    await User.updateMany(
+        { supervisor: id },
+        { $set: { supervisor: null } }
+    );
+
+    // 3. Unassign this teacher from all Projects
+    await Project.updateMany(
+        { supervisor: id },
+        { $set: { supervisor: null, status: "Pending" } } // Optional: reset status to pending since they lost their supervisor
+    );
+
+    // 4. Finally delete the teacher user
     await user.deleteOne();
 
     res.status(200).json({

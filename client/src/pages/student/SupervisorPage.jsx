@@ -73,8 +73,8 @@ const SupervisorPage = () => {
 
   // Filter supervisors
   const filteredSupervisors = supervisors?.filter(sup =>
-    sup.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    sup.department?.toLowerCase().includes(searchTerm.toLowerCase())
+    sup.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    sup.department?.toLowerCase()?.includes(searchTerm.toLowerCase())
   ) || [];
 
   // Helper to format dates

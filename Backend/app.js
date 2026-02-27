@@ -45,9 +45,6 @@ app.use(cors({
     credentials: true
 }));
 
-console.log("Frontend URL:", process.env.FRONTEND_URL); // Debugging
-console.log("Mongo URI:", process.env.MONGO_URI ? "Set" : "Not Set"); // Debugging
-
 const uploadDir = path.join(__dirname, "uploads");
 const tempDir = path.join(uploadDir, "temp");
 

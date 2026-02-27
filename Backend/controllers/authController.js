@@ -100,6 +100,8 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
 
     const resetUrl = `${process.env.Frontend_URL}/reset-password?token=${resetToken}`;
     const message = generateForgotPasswordEmailTemplate(resetUrl);
+    console.log("DEBUG_RESET_URL:", resetUrl);
+    console.log("DEBUG_RESET_TOKEN:", resetToken);
 
     try {
         await sendEmail({
@@ -125,27 +127,37 @@ export const forgotPassword = asyncHandler(async (req, res, next) => {
 
 // Reset Password
 export const resetPassword = asyncHandler(async (req, res, next) => {
+    // Basic validation first
+    if (req.body.password !== req.body.confirmPassword) {
+        return next(new ErrorHandler("Password does not match", 400));
+    }
+
+    // Ensure token string is clean from URL artifacts
+    const token = req.params.token ? String(req.params.token).trim() : "";
+
+    if (!token) {
+        return next(new ErrorHandler("Invalid token format", 400));
+    }
+
     const resetPasswordToken = crypto
         .createHash("sha256")
-        .update(req.params.token)
+        .update(token)
         .digest("hex");
 
-    const user = await User.findOne({
-        resetPasswordToken,
-        resetPasswordExpire: { $gt: Date.now() }
-    });
+    const user = await User.findOne({ resetPasswordToken });
 
     if (!user) {
         return next(new ErrorHandler("Reset Password Token is invalid or has expired", 400));
     }
 
-    if (req.body.password !== req.body.confirmPassword) {
-        return next(new ErrorHandler("Password does not match", 400));
+    // Validate expiration manually to avoid MongoDB Date casting edge-cases across platforms
+    if (user.resetPasswordExpire < Date.now()) {
+        return next(new ErrorHandler("Reset Password Token is invalid or has expired", 400));
     }
 
     user.password = req.body.password;
-    // user.resetPasswordToken = undefined; // Kept as per user request
-    // user.resetPasswordExpire = undefined; // Kept as per user request
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
 
     await user.save();
 

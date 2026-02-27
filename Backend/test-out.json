@@ -1,0 +1,56 @@
+{
+  "teachers": [
+    {
+      "id": "69918a04683da75ea72d9bf6",
+      "name": "Mikul",
+      "role": "Teacher",
+      "experties": [
+        "AI",
+        "Full Stack Developer"
+      ]
+    },
+    {
+      "id": "69918a47683da75ea72d9c1c",
+      "name": "Rahul Kamboj",
+      "role": "Teacher",
+      "experties": [
+        "Expertise in EE"
+      ]
+    },
+    {
+      "id": "69918a67683da75ea72d9c42",
+      "name": "Arpneek Kaur",
+      "role": "Teacher",
+      "experties": [
+        "Expertise in MS"
+      ]
+    }
+  ],
+  "supervisors": [],
+  "requests": [
+    {
+      "id": "69918c7d683da75ea72d9dff",
+      "student": "Sumit",
+      "supervisor": "Rahul Kamboj",
+      "status": "Approved"
+    },
+    {
+      "id": "69918f4ed0376e78f4987f3d",
+      "student": "Rohit",
+      "supervisor": "Rahul Kamboj",
+      "status": "Approved"
+    },
+    {
+      "id": "6991919fd0376e78f4988118",
+      "student": "Ajay Paudel",
+      "supervisor": "Mikul",
+      "status": "Approved"
+    },
+    {
+      "id": "699194f2a4fdbeb5af6785a4",
+      "student": "Santosh",
+      "supervisor": "Mikul",
+      "status": "Approved"
+    }
+  ]
+}

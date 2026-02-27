@@ -109,7 +109,15 @@ const UploadFiles = () => {
     });
   };
 
-  if (!project && !loading) {
+  if (loading && !project) {
+    return (
+      <div className="min-h-screen bg-slate-50/50 flex items-center justify-center p-4">
+        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!project) {
     return (
       <div className="min-h-screen bg-slate-50/50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 md:p-12 text-center max-w-md w-full">

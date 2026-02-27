@@ -6,7 +6,6 @@ class ErrorHandler extends Error {
 }
 
 const errorMiddleware = (err, req, res, next) => {
-  console.error("Error caught in middleware:", err); // Debugging: Log full error
   const statusCode = err.statusCode || 500;
   const message = err.message || "Internal Server Error";
 

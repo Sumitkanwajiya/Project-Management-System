@@ -43,6 +43,9 @@ export const getSupervisor = createAsyncThunk(
       const response = await axiosInstance.get("/student/supervisor");
       return response.data.data?.supervisor;
     } catch (error) {
+      if (error.response?.status === 404) {
+        return null; // Normal case when no supervisor is assigned
+      }
       return rejectWithValue(error.response?.data || { message: "Failed to fetch supervisor" });
     }
   }
