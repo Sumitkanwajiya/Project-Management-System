@@ -78,20 +78,30 @@ export const deleteStudent = asyncHandler(async (req, res, next) => {
         return next(new ErrorHandler("User is not a Student", 400));
     }
 
-    // 1. Delete associated Project
+    // 1. Fetch associated Projects to gracefully delete sub-documents
+    const studentProjects = await Project.find({ student: id });
+    const projectIds = studentProjects.map(proj => proj._id);
+
+    // 2. Delete all Deadlines tied to these projects
+    if (projectIds.length > 0) {
+        const Deadline = (await import('../models/deadline.js')).default;
+        await Deadline.deleteMany({ project: { $in: projectIds } });
+    }
+
+    // 3. Delete associated Projects
     await Project.deleteMany({ student: id });
 
-    // 2. Delete associated SupervisorRequests
+    // 4. Delete associated SupervisorRequests
     await SupervisorRequest.deleteMany({ student: id });
 
-    // 3. Remove student from Teacher's assignedStudents list if they have a supervisor
+    // 5. Remove student from Teacher's assignedStudents list if they have a supervisor
     if (user.supervisor) {
         await User.findByIdAndUpdate(user.supervisor, {
             $pull: { assignedStudents: id }
         });
     }
 
-    // 4. Finally delete the student user
+    // 6. Finally delete the student user
     await user.deleteOne();
 
     res.status(200).json({

@@ -13,6 +13,11 @@ const sendEmail = async (options) => {
       user: process.env.SMTP_EMAIL,
       pass: process.env.SMTP_PASSWORD,
     },
+    // Production stability settings
+    connectionTimeout: 10000, // 10 seconds 
+    socketTimeout: 10000,
+    logger: true,
+    debug: true
   });
 
   const mailOptions = {
