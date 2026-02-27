@@ -17,7 +17,10 @@ const sendEmail = async (options) => {
       // do not fail on invalid certs
       rejectUnauthorized: false
     },
-    // Production stability settings
+    // Force Node.js to use IPv4 - this fixes Render routing to Google's IPv6 SMTP which times out
+    family: 4,
+    logger: true,
+    debug: true,
     connectionTimeout: 10000,
     socketTimeout: 10000,
   });
